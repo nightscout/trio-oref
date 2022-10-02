@@ -32,3 +32,6 @@ npm-debug.log
 bin/__pycache__
 
 *.pyc
+
+bash-unit-test-temp
+
