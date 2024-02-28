@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 /*
   oref0 Nightscout treatment fetch tool
@@ -26,16 +25,13 @@ var request = require('request');
 var _ = require('lodash');
 var fs = require('fs');
 var network = require('network');
-var shared_node = require('./oref0-shared-node-utils');
-var console_error = shared_node.console_error;
-var console_log = shared_node.console_log;
-var initFinalResults = shared_node.initFinalResults;
 
-var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_callback, final_result) {  
-  var safe_errors = ['ECONNREFUSED', 'ESOCKETTIMEDOUT', 'ETIMEDOUT'];
-  var log_errors = true;
+var safe_errors = ['ECONNREFUSED', 'ESOCKETTIMEDOUT', 'ETIMEDOUT'];
+var log_errors = true;
 
-  var argv = require('yargs')(argv_params)
+if (!module.parent) {
+
+  var argv = require('yargs')
     .usage("$0 ns-glucose.json NSURL API-SECRET <hours>")
     .strict(true)
     .help('help');
@@ -49,7 +45,7 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
 
   if ([null, '--help', '-h', 'help'].indexOf(glucose_input) > 0) {
     usage();
-    process.exit(0); //???????
+    process.exit(0);
   }
 
   var nsurl = params._.slice(1, 2).pop();
@@ -92,21 +88,21 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
       , headers: headers
     };
 
-    if (log_errors) console_error(final_result, 'Connecting to ' + ip +', testing for xDrip API availability');
+    if (log_errors) console.error('Connected to ' + ip +', testing for xDrip API availability');
 
     request(options, function(error, res, data) {
       var failed = false;
       if (res && res.statusCode == 403) {
-        console_error(final_result, "Load from xDrip failed: API_SECRET didn't match");
+        console.error("Load from xDrip failed: API_SECRET didn't match");
         failed = true;
       }
 
       if (error) {
         if (safe_errors.includes(error.code)) {
-          if (log_errors) console_error(final_result, 'Load from local xDrip timed out, likely not connected to xDrip hotspot');
+          if (log_errors) console.error('Load from local xDrip timed out, likely not connected to xDrip hotspot');
           log_errors = false;
         } else {
-          if (log_errors) console_error(final_result, "Load from xDrip failed", error);
+          if (log_errors) console.error("Load from xDrip failed", error);
           log_errors = false;
           failed = true;
         }
@@ -115,18 +111,12 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
       }
 
       if (!failed && data) {
-        console_error(final_result, "CGM results loaded from xDrip");
+        console.error("CGM results loaded from xDrip");
         processAndOutput(data);
         return true;
       }
 
-      if (failed && callback) {
-          // printing will happen in the callback
-          callback();
-      } else {
-          print_callback(final_result);
-      }
-      
+      if (failed && callback) callback();
     });
 
     return false;
@@ -141,7 +131,7 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
     fs.readFile(outputPath, 'utf8', function(err, fileContent) {
 
       if (err) {
-        console_error(final_result, err);
+        console.error(err);
       } else {
         try {
           glucosedata = JSON.parse(fileContent);
@@ -157,11 +147,10 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
             glucosedata = null;
           }
         } catch (e) {
-          console_error(final_result, e);
+          console.error(e);
         }
       }
       loadFromNightscoutWithDate(lastDate, glucosedata);
-      // callback will happen in loadFromNightscoutWithDate
     });
   }
 
@@ -192,19 +181,18 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
       if (res && (res.statusCode == 200 || res.statusCode == 304)) {
 
         if (data) {
-          console_error(final_result, "Got CGM results from Nightscout");
+          console.error("Got CGM results from Nightscout");
           processAndOutput(data);
         } else {
-          console_error(final_result, "Got Not Changed response from Nightscout, assuming no new data is available");
+          console.error("Got Not Changed response from Nightscout, assuming no new data is available");
           // output old file
           if (!_.isNil(glucosedata)) {
-              console_log(final_result, JSON.stringify(glucosedata));
+            console.log(JSON.stringify(glucosedata));
           }
         }
       } else {
-        console_error(final_result, "Loading CGM data from Nightscout failed", error);
+        console.error("Loading CGM data from Nightscout failed", error);
       }
-      print_callback(final_result);
     });
 
   }
@@ -215,28 +203,11 @@ var oref0_get_ns_engtires = function oref0_get_ns_engtires(argv_params, print_ca
       sgvrecord.glucose = sgvrecord.sgv;
     });
 
-    console_log(final_result, JSON.stringify(glucosedata));
+    console.log(JSON.stringify(glucosedata));
   }
 
   network.get_gateway_ip(function(err, ip) {
     loadFromxDrip(nsCallback, ip);
   });
+
 }
-
-function print_callback(final_result) {
-    console.log(final_result.stdout);
-    console.error(final_result.err);
-}
-
-
-if (!module.parent) {
-    var final_result = initFinalResults();
-    
-    // remove the first parameter.
-    var command = process.argv;
-    command.shift();
-    command.shift();
-    var result = oref0_get_ns_engtires(command, print_callback, final_result)
-}
-
-exports = module.exports = oref0_get_ns_engtires

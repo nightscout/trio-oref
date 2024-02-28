@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 /*
   Released under MIT license. See the accompanying LICENSE.txt file for
