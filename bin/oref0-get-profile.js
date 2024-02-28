@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 /*
   Get Basal Information
@@ -17,21 +16,15 @@
 
 */
 
-var fs = require('fs');
 var generate = require('../lib/profile/');
-var shared_node_utils = require('./oref0-shared-node-utils');
-var console_error = shared_node_utils.console_error;
-var console_log = shared_node_utils.console_log;
-var process_exit = shared_node_utils.process_exit;
-var initFinalResults = shared_node_utils.initFinalResults;
 
-function exportDefaults (final_result) {
-	var defaults = generate.displayedDefaults(final_result);
-	console_log(final_result, JSON.stringify(defaults, null, '\t'));
+function exportDefaults () {
+	var defaults = generate.displayedDefaults();
+	console.log(JSON.stringify(defaults, null, '\t'));
 }
 
-function updatePreferences (final_result, prefs) {
-	var defaults = generate.displayedDefaults(final_result);
+function updatePreferences (prefs) {
+	var defaults = generate.displayedDefaults();
 	
 	// check for any displayedDefaults missing from current prefs and add from defaults
 	
@@ -41,11 +34,12 @@ function updatePreferences (final_result, prefs) {
       }
     }
 
-    console_log(final_result, JSON.stringify(prefs, null, '\t'));
+	console.log(JSON.stringify(prefs, null, '\t'));
 }
 
-var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {  
-    var argv = require('yargs')(argv_params)
+if (!module.parent) {
+    
+    var argv = require('yargs')
       .usage("$0 <pump_settings.json> <bg_targets.json> <insulin_sensitivities.json> <basal_profile.json> [<preferences.json>] [<carb_ratios.json>] [<temptargets.json>] [--model <model.json>] [--autotune <autotune.json>] [--exportDefaults] [--updatePreferences <preferences.json>]")
       .option('model', {
         alias: 'm',
@@ -77,23 +71,22 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
     if (!params.exportDefaults && !params.updatePreferences) {
       if (params._.length < 4 || params._.length > 7) {
         argv.showHelp();
-        process_exit(final_result, 1);
-        return;
+        process.exit(1);
       }
     }
 
     var pumpsettings_input = params._[0];
 
     if (params.exportDefaults) {
-        exportDefaults(final_result);
-        return;
+        exportDefaults();
+        process.exit(0);
     }
     if (params.updatePreferences) {
         var preferences = {};
         var cwd = process.cwd()
-        preferences = JSON.parse(fs.readFileSync(cwd + '/' + params.updatePreferences));
-        updatePreferences(final_result, preferences);
-        return;
+        preferences = require(cwd + '/' + params.updatePreferences);
+        updatePreferences(preferences);
+        process.exit(0);
     }
 
     var bgtargets_input = params._[1]
@@ -106,8 +99,8 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
     var autotune_input = params.autotune;
 
     cwd = process.cwd()
-    var pumpsettings_data = JSON.parse(fs.readFileSync(cwd + '/' + pumpsettings_input));
-    var bgtargets_data = JSON.parse(fs.readFileSync(cwd + '/' + bgtargets_input));
+    var pumpsettings_data = require(cwd + '/' + pumpsettings_input);
+    var bgtargets_data = require(cwd + '/' + bgtargets_input);
     if (bgtargets_data.units !== 'mg/dL') {
         if (bgtargets_data.units === 'mmol/L') {
             for (var i = 0, len = bgtargets_data.targets.length; i < len; i++) {
@@ -116,14 +109,13 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
             }
             bgtargets_data.units = 'mg/dL';
         } else {
-            console_log(final_result, 'BG Target data is expected to be expressed in mg/dL or mmol/L.'
+            console.log('BG Target data is expected to be expressed in mg/dL or mmol/L.'
                  , 'Found', bgtargets_data.units, 'in', bgtargets_input, '.');
-            process_exit(final_result, 2);
-            return;
+            process.exit(2);
         }
     }
     
-    var isf_data = JSON.parse(fs.readFileSync(cwd + '/' + isf_input));
+    var isf_data = require(cwd + '/' + isf_input);
     if (isf_data.units !== 'mg/dL') {
         if (isf_data.units === 'mmol/L') {
             for (i = 0, len = isf_data.sensitivities.length; i < len; i++) {
@@ -131,18 +123,18 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
             }
             isf_data.units = 'mg/dL';
         } else {
-            console_log(final_result, 'ISF is expected to be expressed in mg/dL or mmol/L.'
+            console.log('ISF is expected to be expressed in mg/dL or mmol/L.'
                     , 'Found', isf_data.units, 'in', isf_input, '.');
-            process_exit(final_result, 2);
-            return;
+            process.exit(2);
         }
     }
-    var basalprofile_data = JSON.parse(fs.readFileSync(cwd + '/' + basalprofile_input));
+    var basalprofile_data = require(cwd + '/' + basalprofile_input);
 
     preferences = {};
     if (typeof preferences_input !== 'undefined') {
-        preferences = JSON.parse(fs.readFileSync(cwd + '/' + preferences_input));
+        preferences = require(cwd + '/' + preferences_input);
     }
+    var fs = require('fs');
 
     var model_data = { }
     if (params.model) {
@@ -151,10 +143,9 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
         model_data = model_string.replace(/"/gi, '');
       } catch (e) {
         var msg = { error: e, msg: "Could not parse model_data", file: model_input};
-        console_error(final_result, msg.msg);
-        console_log(final_result, JSON.stringify(msg));
-        process_exit(final_result, 1);
-        return;
+        console.error(msg.msg);
+        console.log(JSON.stringify(msg));
+        process.exit(1);
       }
     }
     var autotune_data = { }
@@ -164,7 +155,7 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
 
       } catch (e) {
         msg = { error: e, msg: "Could not parse autotune_data", file: autotune_input};
-        console_error(final_result, msg.msg);
+        console.error(msg.msg);
         // Continue and output a non-autotuned profile if we don't have autotune_data
         //console.log(JSON.stringify(msg));
         //process.exit(1);
@@ -179,10 +170,9 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
 
         } catch (e) {
             msg = { error: e, msg: "Could not parse carbratio_data. Feature Meal Assist enabled but cannot find required carb_ratios.", file: carbratio_input };
-            console_error(final_result, msg.msg);
-            console.log(final_result, JSON.stringify(msg));
-            process_exit(final_result, 1);
-            return;
+            console.error(msg.msg);
+            console.log(JSON.stringify(msg));
+            process.exit(1);
         }
         var errors = [ ];
 
@@ -196,12 +186,10 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
         if (errors.length) {
 
           errors.forEach(function (msg) {
-            console_error(final_result, msg.msg);
+            console.error(msg.msg);
           });
-          console_log(final_result, JSON.stringify(errors));
-          process_exit(final_result, 1);
-          
-          return;
+          console.log(JSON.stringify(errors));
+          process.exit(1);
         }
     }
     var temptargets_data = { };
@@ -209,7 +197,7 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
         try {
             temptargets_data = JSON.parse(fs.readFileSync(temptargets_input, 'utf8'));
         } catch (e) {
-            console_error(final_result, "Could not parse temptargets_data.");
+            console.error("Could not parse temptargets_data.");
         }
     }
 
@@ -241,25 +229,8 @@ var oref0_get_profile = function oref0_get_profile(final_result, argv_params) {
         if (autotune_data.isfProfile) { inputs.isf = autotune_data.isfProfile; }
         if (autotune_data.carb_ratio) { inputs.carbratio.schedule[0].ratio = autotune_data.carb_ratio; }
     }
-    var profile = generate(final_result, inputs);
+    var profile = generate(inputs);
 
-    console_log(final_result, JSON.stringify(profile));
+    console.log(JSON.stringify(profile));
 
 }
-
-if (!module.parent) {
-    var final_result = initFinalResults();
-    // remove the first parameter.
-    var command = process.argv;
-    command.shift();
-    command.shift();
-    oref0_get_profile(final_result, command)
-
-    console.log(final_result.stdout);
-    if(final_result.err.length > 0) {
-        console.error(final_result.err);
-    }
-    process.exit(final_result.return_val);
-}
-
-exports = module.exports = oref0_get_profile;
