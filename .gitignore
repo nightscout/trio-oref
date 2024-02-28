@@ -2,7 +2,7 @@
 dist/
 
 #npx files
-webpack.config.js
+#webpack.config.js
 Change source code in Oref0.rtf
 package-lock.json
 package.json
