@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Launch this script by typing /bin/bash webpack-cp.sh
+#
+# or with rexcutable permission: ./webpack-cp.sh
+#
+# modify permission by typing chmod a+x webpack-cp.sh
+#
 # perform webpack on the nine .js files:
 #
 # ./lib/iob/index.js
@@ -16,12 +22,6 @@ npx webpack
 
 #
 #  --- Copy and rename oref0/dist .js files to FreeAPS/Resources/javascript/bundle ---
-#
-# Launch this script by typing /bin/bash cpJS.sh
-#
-# or with rexcutable permission: ./cpJS.sh
-#
-# modify permission by typing chmod a+x cpJS.sh
 #
 # change directory variables as needed:
 oref0DIR=./
@@ -41,11 +41,13 @@ cp -p -v $oref0DIR/dist/meal.js $bundleDIR/
 cp -p -v $oref0DIR/dist/profile.js $bundleDIR/
 
 echo ""
-echo "copying oref0/lib/ source files to iAPS root"
+echo "copying /lib/ source files to Open-iAPS/open-iaps-oref"
 echo ""
 echo ""
 
-cp -p -R $oref0DIR/lib $apsDIR/oref0/lib
+cp -p -R $oref0DIR/lib $apsDIR/open-iaps-oref/lib
+echo "These source files are copied from open-iaps-oref, and are for information purposes only." > $apsDIR/open-iaps-oref/oref_source_file_info.txt
+echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/open-iaps-oref/oref_source_file_info.txt
 
 # Retrieves version, branch, and tag information from Git
 git_version=$(git log -1 --format="%h" --abbrev=7)
@@ -57,5 +59,8 @@ git_branch_or_tag="${git_branch:-${git_tag}}"
 git_branch_or_tag_version="${git_branch_or_tag} - git version: ${git_version}"
 
 echo "oref0 branch: ${git_branch_or_tag_version}" > $apsDIR/oref0_source_version.txt
+echo "" >> $apsDIR/oref0_source_version.txt
+echo "Last commits:" >> $apsDIR/oref0_source_version.txt
+git log -30 --oneline --abbrev=7 >> $apsDIR/oref0_source_version.txt
 
 exit
