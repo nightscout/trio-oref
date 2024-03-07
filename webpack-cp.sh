@@ -25,7 +25,7 @@ npx webpack
 #
 # change directory variables as needed:
 oref0DIR=./
-apsDIR=../iAPS
+apsDIR=../Open-iAPS
 
 
 bundleDIR=$apsDIR/FreeAPS/Resources/javascript/bundle
@@ -45,7 +45,7 @@ echo "copying /lib/ source files to Open-iAPS/open-iaps-oref"
 echo ""
 echo ""
 
-cp -p -R $oref0DIR/lib $apsDIR/open-iaps-oref/lib
+cp -p -R $oref0DIR/lib $apsDIR/open-iaps-oref/
 echo "These source files are copied from open-iaps-oref, and are for information purposes only." > $apsDIR/open-iaps-oref/oref_source_file_info.txt
 echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/open-iaps-oref/oref_source_file_info.txt
 
