@@ -1,5 +1,5 @@
 ---
-name: "\U0001F41BBug report"
+name: "\U0001F41B Bug report"
 about: Create a report to help us fix things
 
 ---
@@ -23,10 +23,9 @@ If applicable, add screenshots to help explain your problem.
 **Smartphone (please complete the following information):**
 
 **Setup Information (please complete the following information):**
-* Pump type (e.g. Medtronic 722, v. 2.4A firmware)
-* CGM type (e.g. Dexcom G4 via xDrip+)
-* Rig type (e.g. Edison/Explorer Board rig)
-* oref0 version (e.g. oref0 0.6.2 master, or 0.7.0-dev)
+* Pump type
+* CGM type and CGM app
+* Open-iAPS version, branch and git reference (see Open-iAPS Settings)
 
 **Additional context**
 Add any other context about the problem here.
