@@ -30,15 +30,7 @@ apsDIR=../Open-iAPS
 
 bundleDIR=$apsDIR/FreeAPS/Resources/javascript/bundle
 
-cp -p -v $oref0DIR/dist/autosens.js $bundleDIR/
-cp -p -v $oref0DIR/dist/autotuneCore.js $bundleDIR/autotune-core.js
-cp -p -v $oref0DIR/dist/autotunePrep.js $bundleDIR/autotune-prep.js
-cp -p -v $oref0DIR/dist/basalSetTemp.js $bundleDIR/basal-set-temp.js
-cp -p -v $oref0DIR/dist/determineBasal.js $bundleDIR/determine-basal.js
-cp -p -v $oref0DIR/dist/glucoseGetLast.js $bundleDIR/glucose-get-last.js
-cp -p -v $oref0DIR/dist/iob.js $bundleDIR/
-cp -p -v $oref0DIR/dist/meal.js $bundleDIR/
-cp -p -v $oref0DIR/dist/profile.js $bundleDIR/
+cp -p -v $oref0DIR/dist/bundle/*.js $bundleDIR/
 
 echo ""
 echo "copying /lib/ source files to Open-iAPS/open-iaps-oref"
@@ -61,6 +53,6 @@ git_branch_or_tag_version="${git_branch_or_tag} - git version: ${git_version}"
 echo "oref0 branch: ${git_branch_or_tag_version}" > $apsDIR/oref0_source_version.txt
 echo "" >> $apsDIR/oref0_source_version.txt
 echo "Last commits:" >> $apsDIR/oref0_source_version.txt
-git log -30 --oneline --abbrev=7 >> $apsDIR/oref0_source_version.txt
+git log --since=2024-01-01 --oneline --abbrev=7 >> $apsDIR/oref0_source_version.txt
 
 exit
