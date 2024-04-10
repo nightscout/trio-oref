@@ -110,6 +110,7 @@
     "yargs": "^13.2.2"
   },
   "devDependencies": {
+    "copy-rename-webpack-plugin": "^1.0.2-alpha.0",
     "coveralls": "^3.0.3",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
