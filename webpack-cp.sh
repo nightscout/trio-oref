@@ -53,6 +53,6 @@ git_branch_or_tag_version="${git_branch_or_tag} - git version: ${git_version}"
 echo "oref0 branch: ${git_branch_or_tag_version}" > $apsDIR/oref0_source_version.txt
 echo "" >> $apsDIR/oref0_source_version.txt
 echo "Last commits:" >> $apsDIR/oref0_source_version.txt
-git log -30 --oneline --abbrev=7 >> $apsDIR/oref0_source_version.txt
+git log --since=2024-01-01 --oneline --abbrev=7 >> $apsDIR/oref0_source_version.txt
 
 exit
