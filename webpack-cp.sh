@@ -25,7 +25,7 @@ npx webpack
 #
 # change directory variables as needed:
 oref0DIR=./
-apsDIR=../Open-iAPS
+apsDIR=../Trio
 
 
 bundleDIR=$apsDIR/FreeAPS/Resources/javascript/bundle
@@ -33,13 +33,13 @@ bundleDIR=$apsDIR/FreeAPS/Resources/javascript/bundle
 cp -p -v $oref0DIR/dist/bundle/*.js $bundleDIR/
 
 echo ""
-echo "copying /lib/ source files to Open-iAPS/open-iaps-oref"
+echo "copying /lib/ source files to Trio/Trioref"
 echo ""
 echo ""
 
-cp -p -R $oref0DIR/lib $apsDIR/open-iaps-oref/
-echo "These source files are copied from open-iaps-oref, and are for information purposes only." > $apsDIR/open-iaps-oref/oref_source_file_info.txt
-echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/open-iaps-oref/oref_source_file_info.txt
+cp -p -R $oref0DIR/lib $apsDIR/Trioref/
+echo "These source files are copied from Trioref, and are for information purposes only." > $apsDIR/Trioref/oref_source_file_info.txt
+echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/Trioref/oref_source_file_info.txt
 
 # Retrieves version, branch, and tag information from Git
 git_version=$(git log -1 --format="%h" --abbrev=7)
