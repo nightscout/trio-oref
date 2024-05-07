@@ -33,13 +33,13 @@ bundleDIR=$apsDIR/FreeAPS/Resources/javascript/bundle
 cp -p -v $oref0DIR/dist/bundle/*.js $bundleDIR/
 
 echo ""
-echo "copying /lib/ source files to Trio/Trioref"
+echo "copying /lib/ source files to Trio/trio-oref"
 echo ""
 echo ""
 
-cp -p -R $oref0DIR/lib $apsDIR/Trioref/
-echo "These source files are copied from Trioref, and are for information purposes only." > $apsDIR/Trioref/oref_source_file_info.txt
-echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/Trioref/oref_source_file_info.txt
+cp -p -R $oref0DIR/lib $apsDIR/trio-oref/
+echo "These source files are copied from trio-oref, and are for information purposes only." > $apsDIR/trio-oref/oref_source_file_info.txt
+echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/trio-oref/oref_source_file_info.txt
 
 # Retrieves version, branch, and tag information from Git
 git_version=$(git log -1 --format="%h" --abbrev=7)
