@@ -38,7 +38,7 @@ echo ""
 echo ""
 
 cp -p -R $oref0DIR/lib $apsDIR/trio-oref/
-echo "These source files are copied from trio-oref, and are for information purposes only." > $apsDIR/trio-oref/oref_source_file_info.txt
+echo "These source files are copied from https://github.com/nightscout/trio-oref, and are for information purposes only." > $apsDIR/trio-oref/oref_source_file_info.txt
 echo "The algorithm is run based on minimised files in FreeAPS/Resources/javascript/bundle." >> $apsDIR/trio-oref/oref_source_file_info.txt
 
 # Retrieves version, branch, and tag information from Git
