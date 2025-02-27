@@ -2,17 +2,17 @@
 
 require('should');
 var _ = require('lodash');
-var proxyquire = require('proxyquire');
+let proxyquire = require('proxyquire');
 
 // Create a mock getTime function that matches the actual implementation
 // but uses a fixed date (January 26, 2025)
-var mockGetTime = function(minutes) {
-    var baseTime = new Date(2025, 0, 26, 0, 0, 0); // Jan 26, 2025 midnight
+let mockGetTime = function(minutes) {
+    let baseTime = new Date(2025, 0, 26, 0, 0, 0); // Jan 26, 2025 midnight
     return baseTime.getTime() + minutes * 60 * 1000; // Return timestamp in milliseconds
 };
 
 // Use proxyquire to load the carb_ratios module with our mock
-var carb_ratios = proxyquire('../lib/profile/carbs', {
+let carb_ratios = proxyquire('../lib/profile/carbs', {
     '../medtronic-clock': mockGetTime
 });
 
