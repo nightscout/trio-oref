@@ -56,6 +56,45 @@ describe('IOB', function() {
         //afterDIA.bolussnooze.should.equal(0);
     });
 
+    it('should calculate IOB with Temp Basals', function() {
+
+        var basalprofile = [{
+            'i': 0,
+            'start': '00:00:00',
+            'rate': 1.25,
+            'minutes': 0
+        }];
+        var now = Date.now(),
+            timestamp = new Date(now).toISOString(),
+            timestamp30mAgo = new Date(now - (30 * 60 * 1000)).toISOString(),
+            inputs = {
+                clock: timestamp,
+                history: [{
+                    _type: 'TempBasal',
+                    rate: 0,
+                    date: timestamp30mAgo,
+                    timestamp: timestamp30mAgo
+                }, {
+                    _type: 'TempBasalDuration',
+                    'duration (min)': 30,
+                    date: timestamp30mAgo,
+                    timestamp: timestamp30mAgo
+                }],
+                profile: {
+                    dia: 3,
+                    current_basal: 1,
+                    max_daily_basal: 1,
+                    //bolussnooze_dia_divisor: 2,
+                    'basalprofile': basalprofile
+                }
+            };
+
+        var iobInputs = inputs;
+        var iobNow = iob(iobInputs)[0];
+        // 1.25 for 30m rounded to the nearest 0.05
+        iobNow.netbasalinsulin.should.equal(-0.65);
+    });
+
     it('should calculate IOB with Ultra-fast curve', function() {
 
         var basalprofile = [{
