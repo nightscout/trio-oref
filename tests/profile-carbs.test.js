@@ -2,7 +2,19 @@
 
 require('should');
 var _ = require('lodash');
-var carb_ratios = require('../lib/profile/carbs');
+let proxyquire = require('proxyquire');
+
+// Create a mock getTime function that matches the actual implementation
+// but uses a fixed date (January 26, 2025)
+let mockGetTime = function(minutes) {
+    let baseTime = new Date(2025, 0, 26, 0, 0, 0); // Jan 26, 2025 midnight
+    return baseTime.getTime() + minutes * 60 * 1000; // Return timestamp in milliseconds
+};
+
+// Use proxyquire to load the carb_ratios module with our mock
+let carb_ratios = proxyquire('../lib/profile/carbs', {
+    '../medtronic-clock': mockGetTime
+});
 
 describe('Carb Ratio Profile', function() {
     var carbratio_input = {
@@ -33,7 +45,7 @@ describe('Carb Ratio Profile', function() {
                 { offset: 0, ratio: 12, start: '00:00:00' }
             ]
         };
-	var now = new Date('2025-01-26T04:00:00');
+        var now = new Date('2025-01-26T04:00:00');
         var ratio = carb_ratios.carbRatioLookup({carbratio: exchange_input}, null, now);
         ratio.should.equal(1); // 12 grams per exchange
     });
