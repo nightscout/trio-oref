@@ -130,8 +130,8 @@ describe('Suspend Logic Tests with suspendZerosIob=true', function() {
         const treatments = calcTempTreatments(inputs);
 
         // Calculate expected insulin impact:
-        // 15m at 3 U/h - 2 U/h = 0.25U (from start to basal change)
-        // 15m at 0 U/h - 2 U/h = -0.5U (from basal change and suspend)
+        // 15m at 3 U/h - 2 U/h = 0.25U (from start to suspend)
+        // 15m at 0 U/h - 2 U/h = -0.5U (from suspend to resume)
         // 15m at 3 U/h - 2 U/h = 0.25U (resume to finish)
         // Total: 0U
         const tempBoluses = treatments.filter(t => t.insulin !== undefined);
