@@ -61,7 +61,7 @@ describe('Suspend Logic Tests with suspendZerosIob=true', function() {
                     date: resumeTime.getTime(),
                     timestamp: resumeTime.toISOString()
                 }
-            ],
+            ].reverse(),
             profile: {
                 current_basal: 1,
                 max_daily_basal: 2,
@@ -117,7 +117,7 @@ describe('Suspend Logic Tests with suspendZerosIob=true', function() {
                     date: resumeTime.getTime(),
                     timestamp: resumeTime.toISOString()
                 }
-            ],
+            ].reverse(),
             profile: {
                 current_basal: 1,
                 max_daily_basal: 2,
