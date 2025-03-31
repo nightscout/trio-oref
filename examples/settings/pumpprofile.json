@@ -13,6 +13,7 @@
   "exercise_mode": true,
   "half_basal_exercise_target": 160,
   "maxCOB": 120,
+  "maxMealAbsorptionTime": 6,
   "wide_bg_target_range": false,
   "unsuspend_if_no_temp": true,
   "bolussnooze_dia_divisor": 2,
