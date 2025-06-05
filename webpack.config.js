@@ -20,7 +20,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     libraryTarget: 'var',
-    library: 'freeaps_[name]'
+    library: 'trio_[name]'
   },
   optimization: {
     minimize: true,
